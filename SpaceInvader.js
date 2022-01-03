@@ -123,7 +123,7 @@ function shoot(spaceship){
 
     bulletWidth = 2;
     bulletHeight = 12;
-    if((gameArea.bulletCount == 0 || gameArea.bulletInterall > 180) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
+    if((gameArea.bulletCount == 0 || gameArea.bulletInterall > 120) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
         gameArea.bulletInterall = 0;
         gameArea.bulletCount++;
         bullet = new component(bulletWidth,bulletHeight,spaceship.x + (spaceship.width/2) -(bulletWidth/2), spaceship.y -spaceship.height,"red","bullet");
@@ -142,13 +142,32 @@ function updateGameArea() {
     spaceship.newPoss();
     spaceship.update();
     for(i = 0; i < aliens.length; i++){
+        for(x = 0; x < bullets.length;x++){
+            let myleft = aliens[i].x;
+            let myright = aliens[i].x + (aliens[i].width);
+            let mytop = aliens[i].y;
+            let mybottom = aliens[i].y + (aliens[i].height);
+            let otherleft = bullets[x].x;
+            let otherright = bullets[x].x + (bullets[x].width);
+            let othertop = bullets[x].y;
+            let otherbottom = bullets[x].y + (bullets[x].height);
 
-        if(aliens[0].moveTo == "left"){
-            aliens[i].newAlienPos(true,aliens[0].x);
-        }else{
-            aliens[i].newAlienPos(false,aliens[aliens.length -1 ].x);
+            if((mybottom < othertop) ||
+            (mytop > otherbottom) ||
+            (myright < otherleft) ||
+            (myleft > otherright)){
+            }else{
+                aliens[i].alive = false;
+            }
         }
-        aliens[i].update();
+        if(aliens[i].alive){
+            if(aliens[0].moveTo == "left"){
+                aliens[i].newAlienPos(true,aliens[0].x);
+            }else{
+                aliens[i].newAlienPos(false,aliens[aliens.length -1 ].x);
+            }
+            aliens[i].update();
+        }
 
     }
 }
