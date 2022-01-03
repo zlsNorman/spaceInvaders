@@ -160,12 +160,13 @@ function updateGameArea() {
                 aliens[i].alive = false;
             }
         }
+        
+        if(aliens[0].moveTo == "left"){
+            aliens[i].newAlienPos(true,aliens[0].x);
+        }else{
+            aliens[i].newAlienPos(false,aliens[aliens.length -1 ].x);
+        }
         if(aliens[i].alive){
-            if(aliens[0].moveTo == "left"){
-                aliens[i].newAlienPos(true,aliens[0].x);
-            }else{
-                aliens[i].newAlienPos(false,aliens[aliens.length -1 ].x);
-            }
             aliens[i].update();
         }
 
