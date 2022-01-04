@@ -1,6 +1,7 @@
 let spaceship;
 let aliens = [];
 let bullets = [];
+let alienBullets = [];
 
 function Sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -38,6 +39,8 @@ const gameArea = {
     start : function(){
         this.bulletInterall = 0;
         this.bulletCount = 0;
+        this.alienBulletInterall = 0;
+        this.alienBulletCount = 0;
 
         this.canvas.width = 500;
         this.canvas.height = 500;
@@ -54,6 +57,12 @@ const gameArea = {
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+        let gameOver = document.createElement("div");
+        gameOver.innerHTML = "GAME OVER"
+        document.body.appendChild(gameOver);
     }
 }
 
@@ -66,7 +75,7 @@ function component(width,height,x,y,color,type){
     this.y = y;
     this.speedX = 0;
     this.speedY = 0;
-    if(type == "bullet"){
+    if(type == "bullet"|| type == "alienBullet"){
     }else{
         this.image = new Image();
         this.image.src = color;
@@ -76,7 +85,7 @@ function component(width,height,x,y,color,type){
     this.alive = true;
 
     this.update = function(){
-        if(type == "bullet"){
+        if(type == "bullet" || type == "alienBullet"){
             ctx = gameArea.context;
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -89,6 +98,8 @@ function component(width,height,x,y,color,type){
     this.newPoss = function(){
         if(type == "bullet"){
             this.y += -3;
+        }else if(type == "alienBullet"){
+            this.y += 3;
         }else{
             this.x += this.speedX;
         }
@@ -130,13 +141,31 @@ function shoot(spaceship){
         bullets.push(bullet);
     }
 }
+function alienShoot(alien){
+    gameArea.alienBulletInterall++;
+
+    bulletWidth = 2;
+    bulletHeight = 12;
+    if((gameArea.alienbBulletCount == 0 || gameArea.alienBulletInterall > 70)){
+        gameArea.alienBulletInterall = 0;
+        gameArea.alienbBulletCount++;
+        bullet = new component(bulletWidth,bulletHeight,alien.x + (alien.width/2) -(bulletWidth/2), alien.y +alien.height,"green","alienBullet");
+        alienBullets.push(bullet);
+    }
+}
 
 function updateGameArea() {
+    let randomNumber = Math.floor(Math.random()*(aliens.length));
     gameArea.clear();
     shoot(spaceship);
+    alienShoot(aliens[randomNumber]);
     for(i = 0; i < bullets.length; i++){
         bullets[i].newPoss();
         bullets[i].update();
+    }
+    for(i = 0; i < alienBullets.length; i++){
+        alienBullets[i].newPoss();
+        alienBullets[i].update();
     }
     move(spaceship);
     spaceship.newPoss();
@@ -170,6 +199,24 @@ function updateGameArea() {
             aliens[i].update();
         }
 
+    }
+    for(x = 0; x < alienBullets.length;x++){
+        let myleft = spaceship.x;
+        let myright = spaceship.x + (spaceship.width);
+        let mytop = spaceship.y;
+        let mybottom = spaceship.y + (spaceship.height);
+        let otherleft = alienBullets[x].x;
+        let otherright = alienBullets[x].x + (alienBullets[x].width);
+        let othertop = alienBullets[x].y;
+        let otherbottom = alienBullets[x].y + (alienBullets[x].height);
+
+        if((mybottom < othertop) ||
+        (mytop > otherbottom) ||
+        (myright < otherleft) ||
+        (myleft > otherright)){
+        }else{
+            gameArea.stop();
+        }
     }
 }
 startGame();
