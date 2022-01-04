@@ -62,6 +62,7 @@ const gameArea = {
         clearInterval(this.interval);
         let gameOver = document.createElement("div");
         gameOver.innerHTML = "GAME OVER"
+        gameOver.style.color = "red"
         document.body.appendChild(gameOver);
     }
 }
