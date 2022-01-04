@@ -204,7 +204,25 @@ function updateGameArea() {
                 aliens[i].alive = false;
             }
         }
-        
+        //allienmovement and bullets
+        for(x = 0; x < alienBullets.length;x++){
+            let myleft = spaceship.x;
+            let myright = spaceship.x + (spaceship.width);
+            let mytop = spaceship.y;
+            let mybottom = spaceship.y + (spaceship.height);
+            let otherleft = alienBullets[x].x;
+            let otherright = alienBullets[x].x + (alienBullets[x].width);
+            let othertop = alienBullets[x].y;
+            let otherbottom = alienBullets[x].y + (alienBullets[x].height);
+    
+            if((mybottom < othertop) ||
+            (mytop > otherbottom) ||
+            (myright < otherleft) ||
+            (myleft > otherright)){
+            }else{
+                gameArea.stop(gameArea.aliensAlive);
+            }
+        }
         if(aliens[0].moveTo == "left"){
             aliens[i].newAlienPos(true,aliens[0].x);
         }else{
@@ -216,24 +234,7 @@ function updateGameArea() {
         }
         durch = true;
     }
-    for(x = 0; x < alienBullets.length;x++){
-        let myleft = spaceship.x;
-        let myright = spaceship.x + (spaceship.width);
-        let mytop = spaceship.y;
-        let mybottom = spaceship.y + (spaceship.height);
-        let otherleft = alienBullets[x].x;
-        let otherright = alienBullets[x].x + (alienBullets[x].width);
-        let othertop = alienBullets[x].y;
-        let otherbottom = alienBullets[x].y + (alienBullets[x].height);
-
-        if((mybottom < othertop) ||
-        (mytop > otherbottom) ||
-        (myright < otherleft) ||
-        (myleft > otherright)){
-        }else{
-            gameArea.stop(gameArea.aliensAlive);
-        }
-    }
+    
     if(!gameArea.aliensAlive && durch){
         gameArea.stop(gameArea.aliensAlive);
     }
