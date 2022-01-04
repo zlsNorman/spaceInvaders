@@ -37,6 +37,8 @@ const gameArea = {
     /** @type {HTMLCanvasElement} */
     canvas : document.createElement("canvas"),
     start : function(){
+        this.aliensAlive = false;
+
         this.bulletInterall = 0;
         this.bulletCount = 0;
         this.alienBulletInterall = 0;
@@ -58,12 +60,18 @@ const gameArea = {
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
-    stop : function() {
+    stop : function(aliensAlive) {
         clearInterval(this.interval);
         let gameOver = document.createElement("div");
-        gameOver.innerHTML = "GAME OVER"
-        gameOver.style.color = "red"
-        document.body.appendChild(gameOver);
+        if(aliensAlive){
+            gameOver.innerHTML = "GAME OVER"
+            gameOver.style.color = "red"
+            document.body.appendChild(gameOver);
+        }else{
+            gameOver.innerHTML = "GEWONNEN"
+            gameOver.style.color = "green"
+            document.body.appendChild(gameOver);
+        }
     }
 }
 
@@ -159,6 +167,9 @@ function updateGameArea() {
     let randomNumber = Math.floor(Math.random()*(aliens.length));
     gameArea.clear();
     shoot(spaceship);
+    while(aliens[randomNumber].alive == false){
+        randomNumber = Math.floor(Math.random()*(aliens.length));
+    }
     alienShoot(aliens[randomNumber]);
     for(i = 0; i < bullets.length; i++){
         bullets[i].newPoss();
@@ -171,6 +182,9 @@ function updateGameArea() {
     move(spaceship);
     spaceship.newPoss();
     spaceship.update();
+
+    gameArea.aliensAlive = false;
+    durch =false;
     for(i = 0; i < aliens.length; i++){
         for(x = 0; x < bullets.length;x++){
             let myleft = aliens[i].x;
@@ -198,8 +212,9 @@ function updateGameArea() {
         }
         if(aliens[i].alive){
             aliens[i].update();
+            gameArea.aliensAlive = true;
         }
-
+        durch = true;
     }
     for(x = 0; x < alienBullets.length;x++){
         let myleft = spaceship.x;
@@ -216,8 +231,11 @@ function updateGameArea() {
         (myright < otherleft) ||
         (myleft > otherright)){
         }else{
-            gameArea.stop();
+            gameArea.stop(gameArea.aliensAlive);
         }
+    }
+    if(!gameArea.aliensAlive && durch){
+        gameArea.stop(gameArea.aliensAlive);
     }
 }
 startGame();
