@@ -38,10 +38,10 @@ const gameArea = {
     canvas : document.createElement("canvas"),
     start : function(){
         this.aliensAlive = false;
-
-        this.bulletInterall = 0;
+        this.alienDeathCount = 0;
+        this.bulletIntervall = 0;
         this.bulletCount = 0;
-        this.alienBulletInterall = 0;
+        this.alienbulletIntervall = 0;
         this.alienBulletCount = 0;
 
         this.canvas.width = 500;
@@ -115,15 +115,21 @@ function component(width,height,x,y,color,type){
     }
     //status is true when aliens x != 0
     this.newAlienPos = function(status,aleienX){
+        let movementEaqualToDeath;
+        if(gameArea.alienDeathCount == 0){
+            movementEaqualToDeath = 0;
+        }else{
+            movementEaqualToDeath = gameArea.alienDeathCount*0.1;
+        }
         if(status){
-            this.x += -0.5;
-            if(aleienX == 0){
+            this.x += -0.5 - movementEaqualToDeath;
+            if(aleienX <= 0){
                 this.moveTo = "right"
             }
 
         }else{
-            this.x += +0.5;
-            if(aleienX == gameArea.canvas.width - this.width){
+            this.x += +0.5 + movementEaqualToDeath;
+            if(aleienX >= gameArea.canvas.width - this.width){
                 this.moveTo = "left"
             }
         }   
@@ -139,24 +145,24 @@ function move(component){
     }
 }
 function shoot(spaceship){
-    gameArea.bulletInterall++;
+    gameArea.bulletIntervall++;
 
     bulletWidth = 2;
     bulletHeight = 12;
-    if((gameArea.bulletCount == 0 || gameArea.bulletInterall > 120) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
-        gameArea.bulletInterall = 0;
+    if((gameArea.bulletCount == 0 || gameArea.bulletIntervall > 60) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
+        gameArea.bulletIntervall = 0;
         gameArea.bulletCount++;
         bullet = new component(bulletWidth,bulletHeight,spaceship.x + (spaceship.width/2) -(bulletWidth/2), spaceship.y -spaceship.height,"red","bullet");
         bullets.push(bullet);
     }
 }
 function alienShoot(alien){
-    gameArea.alienBulletInterall++;
+    gameArea.alienbulletIntervall++;
 
     bulletWidth = 2;
     bulletHeight = 12;
-    if((gameArea.alienbBulletCount == 0 || gameArea.alienBulletInterall > 70)){
-        gameArea.alienBulletInterall = 0;
+    if((gameArea.alienbBulletCount == 0 || gameArea.alienbulletIntervall > (70-gameArea.alienDeathCount))){
+        gameArea.alienbulletIntervall = 0;
         gameArea.alienbBulletCount++;
         bullet = new component(bulletWidth,bulletHeight,alien.x + (alien.width/2) -(bulletWidth/2), alien.y +alien.height,"green","alienBullet");
         alienBullets.push(bullet);
@@ -164,6 +170,14 @@ function alienShoot(alien){
 }
 
 function updateGameArea() {
+    //zählt die tode der Aliens
+    gameArea.alienDeathCount = 0;
+    for(let i = 0; i<aliens.length; i++){
+        if(!aliens[i].alive){
+            gameArea.alienDeathCount++
+        }
+    }
+    
     let randomNumber = Math.floor(Math.random()*(aliens.length));
     gameArea.clear();
     shoot(spaceship);
@@ -195,6 +209,7 @@ function updateGameArea() {
             let otherright = bullets[x].x + (bullets[x].width);
             let othertop = bullets[x].y;
             let otherbottom = bullets[x].y + (bullets[x].height);
+            
 
             if((mybottom < othertop) ||
             (mytop > otherbottom) ||
@@ -205,10 +220,34 @@ function updateGameArea() {
             }
         }
         
+        let firstAlienAlive = () =>{
+            let counter = 0;
+            for(let i = 0;i<aliens.length;i++){
+                if(aliens[i].alive){
+                    return counter;
+                }
+                if(counter==aliens.length-1){
+                    return 0;
+                }
+                counter++;
+            }
+        }
+        let lastAlienAlive = () =>{
+            let counter = aliens.length-1;
+            for(let i = (aliens.length-1);i!=0;i--){
+                if(aliens[i].alive){
+                    return counter;
+                }
+                if(counter==0){
+                    return aliens.length-1;
+                }
+                counter--;
+            }
+        }
         if(aliens[0].moveTo == "left"){
-            aliens[i].newAlienPos(true,aliens[0].x);
+            aliens[i].newAlienPos(true,aliens[firstAlienAlive()].x);
         }else{
-            aliens[i].newAlienPos(false,aliens[aliens.length -1 ].x);
+            aliens[i].newAlienPos(false,aliens[lastAlienAlive()].x);
         }
         if(aliens[i].alive){
             aliens[i].update();
@@ -225,6 +264,7 @@ function updateGameArea() {
         let otherright = alienBullets[x].x + (alienBullets[x].width);
         let othertop = alienBullets[x].y;
         let otherbottom = alienBullets[x].y + (alienBullets[x].height);
+        
 
         if((mybottom < othertop) ||
         (mytop > otherbottom) ||
