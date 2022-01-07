@@ -78,7 +78,7 @@ const gameArea = {
             gameOver.innerHTML = "GEWONNEN"
             gameOver.style.color = "green"
             document.body.appendChild(gameOver);
-            //throw new Error("kein Error Beendet nur das Programm");
+            throw new Error("kein Error Beendet nur das Programm");
             
         }
     }
