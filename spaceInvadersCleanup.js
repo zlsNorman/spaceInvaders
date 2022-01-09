@@ -65,21 +65,19 @@ const gameArea = {
     },
     stop : function() {
         clearInterval(this.interval);
-        console.log(aliens[1].animationInterval)
+
         aliens.map((el)=>{
             clearInterval(el.animationInterval);
         })
-        let gameOver = document.createElement("div");
         if(this.alienDeathCount != aliens.length){
-            gameOver.innerHTML = "GAME OVER"
-            gameOver.style.color = "red"
-            document.body.appendChild(gameOver);
+            this.context.font = "48px bold"
+            this.context.fillStyle = "RED";
+            this.context.fillText("GAME OVER",this.canvas.width/2 - (300/2),this.canvas.height/2,300);
         }else{
-            gameOver.innerHTML = "GEWONNEN"
-            gameOver.style.color = "green"
-            document.body.appendChild(gameOver);
-            throw new Error("kein Error Beendet nur das Programm");
-            
+            this.context.font = "48px bold"
+            this.context.fillStyle = "green";
+            this.context.fillText("WIN",this.canvas.width/2 - (90/2),this.canvas.height/2,90);
+            //throw new Error("kein Error Beendet nur das Programm");
         }
     }
 }
@@ -170,7 +168,7 @@ const shoot = (spaceship) =>{
 
     bulletWidth = 2;
     bulletHeight = 12;
-    if((gameArea.bulletCount == 0 || gameArea.bulletIntervall > 0) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
+    if((gameArea.bulletCount == 0 || gameArea.bulletIntervall > 60) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
         gameArea.bulletIntervall = 0;
         gameArea.bulletCount++;
         bullet = new component(bulletWidth,bulletHeight,spaceship.x + (spaceship.width/2) -(bulletWidth/2), spaceship.y -spaceship.height,"red","bullet");
@@ -191,25 +189,24 @@ const alienShoot = (alien) => {
 }
 
 const attacks = () => {
-    winningGame();
     //alien
     let randomAlien = Math.floor(Math.random()*(aliens.length));
 
-    while(aliens[randomAlien].alive == false){
+    while(aliens[randomAlien].alive == false && (gameArea.alienDeathCount !== aliens.length)){
         randomAlien = Math.floor(Math.random()*(aliens.length));
     }
     alienShoot(aliens[randomAlien]);
-    for(i = 0; i < alienBullets.length; i++){
-        alienBullets[i].newPoss();
-        alienBullets[i].update();
-    }
+    alienBullets.map((el)=>{
+        el.newPoss();
+        el.update();
+    })
 
     //spaceship
     shoot(spaceship);
-    for(i = 0; i < bullets.length; i++){
-        bullets[i].newPoss();
-        bullets[i].update();
-    }
+    bullets.map((el)=>{
+        el.newPoss();
+        el.update();
+    })
 }
 
 function updateGameArea() {
@@ -219,6 +216,7 @@ function updateGameArea() {
     gameArea.alienDeathCount = (aliens.filter((el) => {
         return !el.alive ;
     }).length);
+
     attacks();
     moveWithKeyboard(spaceship);
     
@@ -304,12 +302,8 @@ function updateGameArea() {
 }
 
 const winningGame = () =>{
-    /* console.log(gameArea.alienDeathCount >= aliens.length)
-    console.log(gameArea.alienDeathCount)
-    console.log(aliens.length) */
-    if(gameArea.alienDeathCount == aliens.length){
+    if(gameArea.alienDeathCount === aliens.length){
         gameArea.stop();
-        console.log("ENDE");
     }
 }
 startGame();
