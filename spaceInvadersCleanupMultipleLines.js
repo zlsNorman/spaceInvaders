@@ -50,8 +50,8 @@ const gameArea = {
     /** @type {HTMLCanvasElement} */
     canvas : document.createElement("canvas"),
     start : function(){
-        this.aliensAlive = false;
         this.alienDeathCount = 0;
+        this.aliensCount = 0;
         this.bulletIntervall = 0;
         this.bulletCount = 0;
         this.alienbulletIntervall = 0;
@@ -75,11 +75,10 @@ const gameArea = {
     },
     stop : function() {
         clearInterval(this.interval);
-
         aliens.map((el)=>{
             clearInterval(el.animationInterval);
         })
-        if(this.alienDeathCount != aliens.length){
+        if(this.alienDeathCount != this.aliensCount){
             this.context.font = "48px bold"
             this.context.fillStyle = "RED";
             this.context.fillText("GAME OVER",this.canvas.width/2 - (300/2),this.canvas.height/2,300);
@@ -146,7 +145,7 @@ function component(width,height,x,y,color,type){
         if(gameArea.alienDeathCount === 0){
             movementEaqualToDeath = 0;
         }else{
-            movementEaqualToDeath = gameArea.alienDeathCount*0.1;
+            movementEaqualToDeath = gameArea.alienDeathCount*0.05;
         }
         if(status){
             this.x += -0.5 - movementEaqualToDeath;
@@ -178,7 +177,7 @@ const shoot = (spaceship) =>{
 
     bulletWidth = 2;
     bulletHeight = 12;
-    if((gameArea.bulletCount == 0 || gameArea.bulletIntervall > 60) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
+    if((gameArea.bulletCount == 0 || gameArea.bulletIntervall > 0) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
         gameArea.bulletIntervall = 0;
         gameArea.bulletCount++;
         bullet = new component(bulletWidth,bulletHeight,spaceship.x + (spaceship.width/2) -(bulletWidth/2), spaceship.y -spaceship.height,"red","bullet");
@@ -200,9 +199,12 @@ const alienShoot = (alien) => {
 
 const attacks = () => {
     //alien
+    //TODO mit in die updateGameArea alienarmy.map logik ausdenken umm zu schießen aber nur die forderste reihe
     let randomAlien = Math.floor(Math.random()*(aliens.length));
 
-    while(aliens[randomAlien].alive == false && (gameArea.alienDeathCount !== aliens.length)){
+    while(!alienarmy[alienarmy.length-1][randomAlien].alive 
+        && alienarmy[alienarmy.length-1].filter(el => {return el.alive}).length > 0
+        && (gameArea.alienDeathCount !== gameArea.aliensCount)){
         randomAlien = Math.floor(Math.random()*(aliens.length));
     }
     alienShoot(aliens[randomAlien]);
@@ -223,78 +225,87 @@ function updateGameArea() {
 
     gameArea.clear();
     //zählt die tode der Aliens
-    gameArea.alienDeathCount = (aliens.filter((el) => {
+    gameArea.aliensCount = alienarmy.reduce((prev,curr)=>{
+        return prev.length + curr.length;
+    });
+/*     gameArea.alienDeathCount = (aliens.filter((el) => {
         return !el.alive ;
-    }).length);
+    }).length); */
+    gameArea.alienDeathCount = alienarmy.reduce((prev,curr)=>{
+        return prev.filter((el) => {return !el.alive}).length + curr.filter((el) => {return !el.alive}).length;
+    });
 
     attacks();
     moveWithKeyboard(spaceship);
     
-    for(i = 0; i < aliens.length; i++){
-        for(x = 0; x < bullets.length;x++){
-            let myleft = aliens[i].x;
-            let myright = aliens[i].x + (aliens[i].width);
-            let mytop = aliens[i].y;
-            let mybottom = aliens[i].y + (aliens[i].height);
-            let otherleft = bullets[x].x;
-            let otherright = bullets[x].x + (bullets[x].width);
-            let othertop = bullets[x].y;
-            let otherbottom = bullets[x].y + (bullets[x].height);
-            
+    alienarmy.map((aliens,index)=>{
+        for(i = 0; i < aliens.length; i++){
+            for(x = 0; x < bullets.length;x++){
+                let myleft = aliens[i].x;
+                let myright = aliens[i].x + (aliens[i].width);
+                let mytop = aliens[i].y;
+                let mybottom = aliens[i].y + (aliens[i].height);
+                let otherleft = bullets[x].x;
+                let otherright = bullets[x].x + (bullets[x].width);
+                let othertop = bullets[x].y;
+                let otherbottom = bullets[x].y + (bullets[x].height);
+                
 
-            if((mybottom < othertop) ||
-            (mytop > otherbottom) ||
-            (myright < otherleft) ||
-            (myleft > otherright)){
+                if((mybottom < othertop) ||
+                (mytop > otherbottom) ||
+                (myright < otherleft) ||
+                (myleft > otherright)){
+                }else{
+                    aliens[i].alive = false;
+                    bullets.splice(x,1);
+                }
+            }
+            
+            let firstAlienAlive = () =>{
+                let counter = 0;
+                for(let i = 0;i<aliens.length;i++){
+                    if(aliens[i].alive){
+                        return counter;
+                    }
+                    if(counter==aliens.length-1){
+                        return 0;
+                    }
+                    counter++;
+                }
+            }
+            let lastAlienAlive = () =>{
+                let counter = aliens.length-1;
+                for(let i = (aliens.length-1);i!=0;i--){
+                    if(aliens[i].alive){
+                        return counter;
+                    }
+                    if(counter==0){
+                        return aliens.length-1;
+                    }
+                    counter--;
+                }
+            }
+            if(aliens[0].moveTo == "left"){
+                if(aliens[firstAlienAlive()]){
+                    aliens[i].newAlienPos(true,aliens[firstAlienAlive()].x)
+                }
             }else{
-                aliens[i].alive = false;
+                if(aliens[lastAlienAlive()]){
+                    aliens[i].newAlienPos(false,aliens[lastAlienAlive()].x)
+                }
+            }
+            /* alienarmy.map((el,index)=>{
+                //TODO ÄNDERN FALLS WIEDER ANDERS
+                if(alienarmy[index][i].alive){
+                    alienarmy[index][i].update();
+                }
+            }) */
+            if(aliens[i].alive){
+                aliens[i].update();
             }
         }
         
-        let firstAlienAlive = () =>{
-            let counter = 0;
-            for(let i = 0;i<aliens.length;i++){
-                if(aliens[i].alive){
-                    return counter;
-                }
-                if(counter==aliens.length-1){
-                    return 0;
-                }
-                counter++;
-            }
-        }
-        let lastAlienAlive = () =>{
-            let counter = aliens.length-1;
-            for(let i = (aliens.length-1);i!=0;i--){
-                if(aliens[i].alive){
-                    return counter;
-                }
-                if(counter==0){
-                    return aliens.length-1;
-                }
-                counter--;
-            }
-        }
-        if(aliens[0].moveTo == "left"){
-            if(aliens[firstAlienAlive()]){
-                aliens[i].newAlienPos(true,aliens[firstAlienAlive()].x)
-            }
-        }else{
-            if(aliens[lastAlienAlive()]){
-                aliens[i].newAlienPos(false,aliens[lastAlienAlive()].x)
-            }
-        }
-        /* alienarmy.map((el,index)=>{
-            //TODO ÄNDERN FALLS WIEDER ANDERS
-            if(alienarmy[index][i].alive){
-                alienarmy[index][i].update();
-            }
-        }) */
-        if(aliens[i].alive){
-            aliens[i].update();
-        }
-        
-    }
+    });
     for(x = 0; x < alienBullets.length;x++){
         
         let myleft = spaceship.x;
@@ -319,7 +330,7 @@ function updateGameArea() {
 }
 
 const winningGame = () =>{
-    if(gameArea.alienDeathCount === aliens.length){
+    if(gameArea.alienDeathCount === gameArea.aliensCount){
         gameArea.stop();
     }
 }
