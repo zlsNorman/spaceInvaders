@@ -21,7 +21,7 @@ const createAliens = () => {
             if(i == 1){
                 alien = new component(alienWidth,alienHeight,alienX ,10,"img/alien.png","alien");
             }
-            alien.animation();
+            //alien.animation();
             return alien;
         })
         alienarmy.push(aliens);
