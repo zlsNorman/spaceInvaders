@@ -34,7 +34,6 @@ const customeGameSettings = () =>{
     shipSpeed = parseInt(document.querySelector("#shipspeed").value);
     alienSpeed = parseInt(document.querySelector("#alienspeed").value)/10;
 
-
     if(btnAutoshooting.classList.contains("aktiv")){
         isAutoschooting = true;
     }else{
@@ -60,6 +59,7 @@ const createAliens = () => {
                 //damit der gap weggelassen wird
                 alien = new component(alienWidth,alienHeight,alienX ,10,"img/alien.png","alien");
             }
+            alien.animation();
             aliens[alienIndex] = alien;
         }
         alienInvasion.push(aliens);
@@ -154,7 +154,6 @@ let gameArea = {
         createAliens();
     }
 }
-
 function component(width,height,x,y,color,type) {
     //eigenschaften
     this.width = width;
@@ -213,7 +212,16 @@ function component(width,height,x,y,color,type) {
                 this.moveTo = "left"
             }
         }   
-    }  
+    }
+    this.animation = function(){
+        this.animationInterval = setInterval( () => {
+            if(!this.image.src.includes(color)){
+                this.image.src =  color;
+            }else{
+                this.image.src = "img/alienHandsup.png";
+            }
+        }, 1000);
+    };
 }
 
 //wird immer im intervall/Frame aufgerufen um die componenten darzustellen und zu bewegen
