@@ -11,6 +11,8 @@ let shipSpeed = parseInt(document.querySelector("#shipspeed").value);
 let alienSpeed = parseInt(document.querySelector("#alienspeed").value)/10;
 
 let settingsReset = document.querySelector("#settingsReset");
+let btnAutoshooting = document.querySelector("#btnAutoshooting");
+let isAutoschooting = false;
 
 buttonContainer.addEventListener("click",(thies)=>{
 
@@ -29,8 +31,16 @@ buttonContainer.addEventListener("click",(thies)=>{
     }
 })
 
-settingsReset.addEventListener("click",(thies)=>{
+btnAutoshooting.addEventListener("click",(thies)=>{
+    if(thies.currentTarget.classList.contains("aktiv")){
+        thies.currentTarget.classList.remove("aktiv")
+    }else{
+        thies.currentTarget.classList.add("aktiv")
+    }
+})
 
+settingsReset.addEventListener("click",(thies)=>{
+    btnAutoshooting.classList.remove("aktiv");
     document.body.querySelector(".buttonContainer #btnKeyboard").click();
     document.querySelector("#alienbulletintervall").value = 70;
     document.querySelector("#shipbulletintervall").value = 80;

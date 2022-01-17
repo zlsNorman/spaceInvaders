@@ -36,6 +36,7 @@
       }
       .aktiv {
         border-color: green;
+        border-width: 4px;
       }
       #fullscreen {
         margin-left: 41rem;
@@ -47,6 +48,12 @@
       #settingsReset{
         margin-top: 1rem;
         display: block;
+      }
+      .important{
+        color: red;
+      }
+      #btnAutoshooting{
+        margin-top: 0.5rem;
       }
     </style>
     <script src="html.js" defer></script>
@@ -87,12 +94,13 @@
               </div>
             </div>
             <div id="settings">
-              <p>hier kommen ein paar einstellungen</p>
+              <p class="important">Einstellungen werden erst beim Neustart uebernommen</p>
               <p>Steuerung mit:</p>
               <div class="buttonContainer">
                 <button id="btnKeyboard" class="aktiv button">Tastatur</button>
                 <button id="btnMouse" class="button">Maus</button>
               </div>
+              <button id="btnAutoshooting" class="button">Automatisches schießen</button>
               <p>Alienreihen</p>
               <input
                 type="range"

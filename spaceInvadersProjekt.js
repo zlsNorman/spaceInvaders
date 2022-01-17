@@ -34,6 +34,12 @@ const customeGameSettings = () =>{
     shipSpeed = parseInt(document.querySelector("#shipspeed").value);
     alienSpeed = parseInt(document.querySelector("#alienspeed").value)/10;
 
+
+    if(btnAutoshooting.classList.contains("aktiv")){
+        isAutoschooting = true;
+    }else{
+        isAutoschooting = false;
+    }
 }
 
 //erstellt alle aliens
@@ -261,7 +267,7 @@ const shoot = () =>{
 
     let bulletWidth = 2;
     let bulletHeight = 12;
-    if((gameArea.shipBullets == 0 || gameArea.shipBulletIntervall > shipCustomBulletIntervall) &&(gameArea.pressedKey && gameArea.pressedKey[32])){
+    if((gameArea.shipBullets == 0 || gameArea.shipBulletIntervall > shipCustomBulletIntervall) &&((gameArea.pressedKey && gameArea.pressedKey[32])|| isAutoschooting)){
         gameArea.shipBulletIntervall = 0;
         gameArea.shipBullets++;
         bullet = new component(bulletWidth,bulletHeight,spaceship.x + (spaceship.width/2) -(bulletWidth/2), spaceship.y -spaceship.height,"red","bullet");
