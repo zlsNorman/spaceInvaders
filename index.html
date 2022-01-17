@@ -1,20 +1,145 @@
-<html>
-    <head>
-        <style>
-           canvas{
-              background-color: black;
-           }
-        </style>
-    </head>
-     <body>
-        <script src="spaceInvadersCleanupMultipleLines.js"></script>
-        <div>
-           <p>Steuerung: <br>
-              => nach rechts <br>
-              <= nach links <br>
-              [Space] schießen
-           </p>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      canvas {
+        background-color: black;
+      }
+      canvas:fullscreen {
+        background-color: white;
+      }
+      body {
+        overflow: hidden;
+        margin: 0;
+      }
+      .flex {
+        display: flex;
+      }
+      .gap {
+        gap: 1rem;
+      }
+      .flex-column {
+        display: flex;
+        flex-direction: column;
+      }
+      #contolls,
+      #settings {
+        padding: 1rem;
+      }
+      #game {
+      }
+      .container {
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        display: flex;
+      }
+      .aktiv {
+        border-color: green;
+      }
+      #fullscreen {
+        margin-left: 41rem;
+      }
+      #reset {
+        margin-top: 1rem;
+        display: block;
+      }
+      #settingsReset{
+        margin-top: 1rem;
+        display: block;
+      }
+    </style>
+    <script src="html.js" defer></script>
+    <script src="spaceInvadersProjekt.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <div id="highlights" class="flex">
+          <div>
+            <span>Score: </span>
+            <span id="gameScore"></span>
+          </div>
+          <button id="fullscreen">Fullscreen</button>
         </div>
-     </body>
-     
+        <div id="game" class="flex">
+          <!--hier kommt das canvas hin-->
+          <div class="flex-column">
+            <div id="contolls">
+              Steuerung: <br />
+              <div class="flex gap">
+                <div>
+                  <p>
+                    Tastatur<br />
+
+                    => nach rechts <br />
+                    <= nach links <br />
+                    [Space] schießen
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    Maus<br />
+
+                    [Space] schießen
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div id="settings">
+              <p>hier kommen ein paar einstellungen</p>
+              <p>Steuerung mit:</p>
+              <div class="buttonContainer">
+                <button id="btnKeyboard" class="aktiv button">Tastatur</button>
+                <button id="btnMouse" class="button">Maus</button>
+              </div>
+              <p>Alienreihen</p>
+              <input
+                type="range"
+                id="alienrows"
+                min="1"
+                max="8"
+                step="1"
+                value="2"
+              />
+              <div class="flex gap">
+                <div>
+                  <p>Alien Speed</p>
+                  <input
+                    type="range"
+                    id="alienspeed"
+                    value="5"
+                    min="1"
+                    max="10"
+                  />
+                </div>
+                <div>
+                  <p>Alien Bullet Intervall</p>
+                  <input type="number" id="alienbulletintervall" value="70" />
+                </div>
+              </div>
+              <div class="flex gap">
+                <div>
+                  <p>Ship Bullet Intervall</p>
+                  <input type="number" id="shipbulletintervall" value="80" />
+                </div>
+                <div>
+                  <p>Ship Speed</p>
+                  <input
+                    type="range"
+                    id="shipspeed"
+                    value="5"
+                    min="1"
+                    max="10"
+                  />
+                </div>
+              </div>
+              <button id="settingsReset">Reset Settings</button>
+              <button id="reset">Spiel Neustarten</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
