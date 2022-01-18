@@ -33,6 +33,8 @@ const customeGameSettings = () =>{
     inputAlienRows = parseInt(document.querySelector("#alienrows").value);
     shipSpeed = parseInt(document.querySelector("#shipspeed").value);
     alienSpeed = parseInt(document.querySelector("#alienspeed").value)/10;
+    bulletspeed = parseInt(document.querySelector("#bulletspeed").value);
+
 
     if(btnAutoshooting.classList.contains("aktiv")){
         isAutoschooting = true;
@@ -141,7 +143,7 @@ let gameArea = {
     },
     restart : function(){
         customeGameSettings();
-
+        
         gameArea.clear();
         createSpaceship();
         spaceship;
@@ -152,6 +154,9 @@ let gameArea = {
         shipBullets = [];
         alienBullets = [];
         createAliens();
+        
+        clearInterval(this.interval);
+        this.interval = setInterval(updateGameArea,16);
     }
 }
 function component(width,height,x,y,color,type) {
@@ -185,9 +190,9 @@ function component(width,height,x,y,color,type) {
     }
     this.newPoss = function(){
         if(type === "bullet"){
-            this.y += -3;
+            this.y += -bulletspeed;
         }else if(type === "alienBullet"){
-            this.y += 3;
+            this.y += bulletspeed;
         }else{
             this.x += this.speedX;
         }
@@ -220,7 +225,7 @@ function component(width,height,x,y,color,type) {
             }else{
                 this.image.src = "img/alienHandsup.png";
             }
-        }, 1000);
+        }, 1500);
     };
 }
 
@@ -246,17 +251,42 @@ const updateGameArea = () => {
 
 const attacks = () => {
     //alien
+    let aliensAviable = [];
+    [...alienInvasion].map((el)=>{
+        el.map((alien,alienIndex)=>{
+            if(alien.alive == true){
+                aliensAviable.push( 
+                    alienIndex
+                );
+            }
+        })
+    })
+    aliensAviable = [...new Set(aliensAviable)];
+    let randomNumber = Math.floor(Math.random()*(aliensAviable.length));
+
+    let alienArmyNr = alienInvasion.length-1
+    for(let i = alienInvasion.length-1; i>= 0; i--){
+        if(alienInvasion[i][randomNumber].alive == true){
+            alienArmyNr = i;
+            break;
+        } 
+    }
+
+    /* let randomAlien = aliensAviable[randomNumber]; */
     //TODO mit in die updateGameArea alienarmy.map logik ausdenken umm zu schießen aber nur die forderste reihe
-    let randomAlien = Math.floor(Math.random()*(aliens.length));
+    //let randomAlien = Math.floor(Math.random()*(aliens.length));
 
     //while umtauschen mit filter der ein array zurückgibt mit den index der lebenden aus diesen dann mit random zahl eine auswählen
     //achtung kann zur dauerschleife führen
-    while(!alienInvasion[alienInvasion.length-1][randomAlien].alive 
+/*     while(!alienInvasion[alienInvasion.length-1][randomAlien].alive 
         && alienInvasion[alienInvasion.length-1].filter(el => {return el.alive}).length > 0
         && (gameArea.alienDeathCount !== gameArea.aliensInInvasion)){
         randomAlien = Math.floor(Math.random()*(aliens.length));
-    }
-    alienShoot(aliens[randomAlien]);
+    } */
+
+    /* alienShoot(aliens[randomAlien]); */
+    alienShoot(alienInvasion[alienArmyNr][randomNumber]);
+
     for(let alienBullet of alienBullets){
         alienBullet.newPoss();
         alienBullet.update();
@@ -323,7 +353,27 @@ const movement = () => {
                 (myright < otherleft) ||
                 (myleft > otherright)){
                 }else{
-                    if(aliens[i].alive) shipBullets.splice(x,1);
+                    
+                    if(aliens[i].alive){
+                    shipBullets.splice(x,1);
+
+                    //explosionsanimation requestAnimationFrame passt sich der normalen Framerate an
+                    let repeater;
+                    let iterationCount = 0;
+                    function alienExplosion () {
+                        iterationCount++;
+                        
+                        if (iterationCount > 12) {
+                           cancelAnimationFrame(repeater);
+                        } else {
+                            drawSprite(gameArea.context,"img/ExplosionGreen.png",96*iterationCount,0,96,92,aliens[i].x-10,aliens[i].y-10,50,50);
+                            repeater = requestAnimationFrame(alienExplosion);
+                        }
+                     }
+                    
+                    alienExplosion();
+                }
+                     
                     aliens[i].alive = false;
                 }
             }
@@ -443,7 +493,6 @@ const fullscreen = ()=>{
              el.mozRequestFullScreen();
           }            
 }
-
 
 const drawSprite = (ctx,img,sX,sY,sW,sH,dX,dY,dW,dH) =>{
     const imageSprite = new Image();

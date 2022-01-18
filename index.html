@@ -26,8 +26,6 @@
       #settings {
         padding: 1rem;
       }
-      #game {
-      }
       .container {
         justify-content: center;
         align-items: center;
@@ -45,14 +43,14 @@
         margin-top: 1rem;
         display: block;
       }
-      #settingsReset{
+      #settingsReset {
         margin-top: 1rem;
         display: block;
       }
-      .important{
+      .important {
         color: red;
       }
-      #btnAutoshooting{
+      #btnAutoshooting {
         margin-top: 0.5rem;
       }
     </style>
@@ -94,13 +92,17 @@
               </div>
             </div>
             <div id="settings">
-              <p class="important">Einstellungen werden erst beim Neustart uebernommen</p>
+              <p class="important">
+                Einstellungen werden erst beim Neustart uebernommen
+              </p>
               <p>Steuerung mit:</p>
               <div class="buttonContainer">
                 <button id="btnKeyboard" class="aktiv button">Tastatur</button>
                 <button id="btnMouse" class="button">Maus</button>
               </div>
-              <button id="btnAutoshooting" class="button">Automatisches schießen</button>
+              <button id="btnAutoshooting" class="button">
+                Automatisches schießen
+              </button>
               <p>Alienreihen</p>
               <input
                 type="range"
@@ -141,6 +143,16 @@
                     max="10"
                   />
                 </div>
+              </div>
+              <div>
+                <p>Schussgeschwindigkeit</p>
+                <input
+                  type="range"
+                  id="bulletspeed"
+                  value="3"
+                  min="1"
+                  max="10"
+                />
               </div>
               <button id="settingsReset">Reset Settings</button>
               <button id="reset">Spiel Neustarten</button>

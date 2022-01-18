@@ -9,6 +9,7 @@ let shipCustomBulletIntervall = parseInt(document.querySelector("#shipbulletinte
 let inputAlienRows = parseInt(document.querySelector("#alienrows").value);
 let shipSpeed = parseInt(document.querySelector("#shipspeed").value);
 let alienSpeed = parseInt(document.querySelector("#alienspeed").value)/10;
+let bulletspeed = parseInt(document.querySelector("#bulletspeed").value);
 
 let settingsReset = document.querySelector("#settingsReset");
 let btnAutoshooting = document.querySelector("#btnAutoshooting");
@@ -47,5 +48,6 @@ settingsReset.addEventListener("click",(thies)=>{
     document.querySelector("#alienrows").value = 2;
     document.querySelector("#shipspeed").value = 5;
     document.querySelector("#alienspeed").value = 5;
+    document.querySelector("#bulletspeed").value = 3
 })
 
