@@ -11,6 +11,8 @@ let alienInvasion = [];
 let shipBullets = [];
 let alienBullets = [];
 
+//obstacles
+let obstacles = [];
 
 
 //mousekoordinaten
@@ -34,6 +36,9 @@ const customeGameSettings = () =>{
     shipSpeed = parseInt(document.querySelector("#shipspeed").value);
     alienSpeed = parseInt(document.querySelector("#alienspeed").value)/10;
     bulletspeed = parseInt(document.querySelector("#bulletspeed").value);
+
+    obstaclesAmount = parseInt(document.querySelector("#obstaclesAmount").value);
+    obstaclesValue = parseInt(document.querySelector("#obstaclesValue").value);
 
 
     if(btnAutoshooting.classList.contains("aktiv")){
@@ -78,6 +83,34 @@ const createSpaceship = () =>{
     spaceship = new component(spaceshipWidth,spaceshipHeight,spaceshipX,spaceshipY,"img/spaceship2.png","spaceship");
 };
 
+const createObstacles = () =>{
+    let obstaclePixel = 7;
+    let gapColumn;
+    let gapRows;
+
+    let obstaclesBorderTop = alienInvasion[alienInvasion.length-1][0].y + alienInvasion[alienInvasion.length-1][0].height + 20;
+    let obstaclesBorderBottom = spaceship.y-(spaceship.height*5);
+
+    let randomPositionX;
+    let randomPositionY;
+    
+    let array = []
+
+    for(i=0;i<obstaclesAmount;i++){
+        randomPositionX = ~~(Math.random()*gameArea.canvas.width);
+        randomPositionY = ~~((Math.random()* (obstaclesBorderBottom - obstaclesBorderTop + 1)) + obstaclesBorderTop);
+        randomValue = ~~((Math.random()* (obstaclesValue-1)+1))
+        for(x = 0; x<randomValue; x++){
+            gapRows = obstaclePixel*x;
+            array.push([...new Array(randomValue)].map((el,index)=>{
+                gapColumn = obstaclePixel*index;
+                return new component(obstaclePixel,obstaclePixel,randomPositionX+gapColumn,randomPositionY+gapRows,"grey","obstacle");
+            }))
+        }
+        obstacles.push(array)
+    }
+    
+}
 
 function startGame(){
     customeGameSettings();
@@ -85,6 +118,7 @@ function startGame(){
 
     createSpaceship();
     createAliens();
+    createObstacles();
 }
 
 let gameArea = {
@@ -154,7 +188,10 @@ let gameArea = {
         shipBullets = [];
         alienBullets = [];
         createAliens();
-        
+
+        obstacles = [];
+        createObstacles();
+
         clearInterval(this.interval);
         this.interval = setInterval(updateGameArea,16);
     }
@@ -170,6 +207,10 @@ function component(width,height,x,y,color,type) {
     this.alive = true;
 
     if(type === "bullet"|| type === "alienBullet"){
+    }else if(type === "obstacle"){
+        ctx = gameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }else{
         this.image = new Image();
         this.image.src = color;
@@ -179,6 +220,10 @@ function component(width,height,x,y,color,type) {
     //funktionen
     this.update = function(){
         if(type === "bullet" || type === "alienBullet"){
+            ctx = gameArea.context;
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }else if(type === "obstacle"){
             ctx = gameArea.context;
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -243,10 +288,68 @@ const updateGameArea = () => {
     },0)
     
     score.innerHTML = gameArea.alienDeathCount;
+    showObstacles();
     attacks();
     movement();
     shipCollision();
     winningGame();
+}
+const showObstacles = () =>{
+    for(let obstacleIndex in obstacles){
+        for(let i = 0; i< obstacles[obstacleIndex].length; i++){
+            obstacles[obstacleIndex][i].map((obstaclePixel,index)=>{
+                
+                if(obstaclePixel.alive){
+                    obstaclePixel.update();
+                    for(x = 0; x < shipBullets.length;x++){
+                        let myleft = obstaclePixel.x;
+                        let myright = obstaclePixel.x + (obstaclePixel.width);
+                        let mytop = obstaclePixel.y;
+                        let mybottom = obstaclePixel.y + (obstaclePixel.height);
+                        let otherleft = shipBullets[x].x;
+                        let otherright = shipBullets[x].x + (shipBullets[x].width);
+                        let othertop = shipBullets[x].y;
+                        let otherbottom = shipBullets[x].y + (shipBullets[x].height);
+                        
+                        if((mybottom < othertop) ||
+                        (mytop > otherbottom) ||
+                        (myright < otherleft) ||
+                        (myleft > otherright)){
+                        }else{
+                            if(obstaclePixel.alive){
+                                shipBullets.splice(x,1);
+                                obstaclePixel.alive = false;
+                            }
+                        }
+                    }
+                    if(obstaclePixel.alive){
+                        for(x = 0; x < alienBullets.length;x++){
+        
+                            let myleft = obstaclePixel.x;
+                            let myright = obstaclePixel.x + (obstaclePixel.width);
+                            let mytop = obstaclePixel.y;
+                            let mybottom = obstaclePixel.y + (obstaclePixel.height);
+                            let otherleft = alienBullets[x].x;
+                            let otherright = alienBullets[x].x + (alienBullets[x].width);
+                            let othertop = alienBullets[x].y;
+                            let otherbottom = alienBullets[x].y + (alienBullets[x].height);
+                            
+                    
+                            if((mybottom < othertop) ||
+                            (mytop > otherbottom) ||
+                            (myright < otherleft) ||
+                            (myleft > otherright)){
+                            }else{
+                                alienBullets.splice(x,1);
+                                obstaclePixel.alive = false;
+                            }
+                        }
+                    }
+                }
+            })
+
+        }
+    }
 }
 
 const attacks = () => {
@@ -272,19 +375,6 @@ const attacks = () => {
         } 
     }
 
-    /* let randomAlien = aliensAviable[randomNumber]; */
-    //TODO mit in die updateGameArea alienarmy.map logik ausdenken umm zu schießen aber nur die forderste reihe
-    //let randomAlien = Math.floor(Math.random()*(aliens.length));
-
-    //while umtauschen mit filter der ein array zurückgibt mit den index der lebenden aus diesen dann mit random zahl eine auswählen
-    //achtung kann zur dauerschleife führen
-/*     while(!alienInvasion[alienInvasion.length-1][randomAlien].alive 
-        && alienInvasion[alienInvasion.length-1].filter(el => {return el.alive}).length > 0
-        && (gameArea.alienDeathCount !== gameArea.aliensInInvasion)){
-        randomAlien = Math.floor(Math.random()*(aliens.length));
-    } */
-
-    /* alienShoot(aliens[randomAlien]); */
     alienShoot(alienInvasion[alienArmyNr][randomNumber]);
 
     for(let alienBullet of alienBullets){

@@ -125,13 +125,13 @@
                 </div>
                 <div>
                   <p>Alien Bullet Intervall</p>
-                  <input type="number" id="alienbulletintervall" value="70" />
+                  <input type="number" id="alienbulletintervall" value="60" />
                 </div>
               </div>
               <div class="flex gap">
                 <div>
                   <p>Ship Bullet Intervall</p>
-                  <input type="number" id="shipbulletintervall" value="80" />
+                  <input type="number" id="shipbulletintervall" value="60" />
                 </div>
                 <div>
                   <p>Ship Speed</p>
@@ -149,10 +149,30 @@
                 <input
                   type="range"
                   id="bulletspeed"
-                  value="3"
+                  value="4"
                   min="1"
                   max="10"
                 />
+              </div>
+              <div class="flex gap">
+                <div>
+                <p>max. Meteor breite</p>
+                  <input
+                    type="range"
+                    id="obstaclesValue"
+                    value="3"
+                    min="1"
+                    max="6"
+                  />
+                </div>
+                <div>
+                  <p>Meteor anzahl</p>
+                    <input
+                      type="number"
+                      id="obstaclesAmount"
+                      value="20"
+                    />
+                  </div>
               </div>
               <button id="settingsReset">Reset Settings</button>
               <button id="reset">Spiel Neustarten</button>
