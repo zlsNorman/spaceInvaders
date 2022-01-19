@@ -551,10 +551,10 @@ const moveWithHandy = (component) =>{
         let touchedCorr = thies.changedTouches[0].pageX;
         thies.preventDefault();
 
-        if(touchedCorr < (gameArea.canvas.width/2+300)){
+        if(touchedCorr < (gameArea.canvas.width/2)){
             component.touched = "left"
         }
-        if(touchedCorr > (gameArea.canvas.width/2+300)){
+        if(touchedCorr > (gameArea.canvas.width/2)){
             component.touched = "right"
         }   
     })
