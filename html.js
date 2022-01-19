@@ -11,6 +11,9 @@ let shipSpeed = parseInt(document.querySelector("#shipspeed").value);
 let alienSpeed = parseInt(document.querySelector("#alienspeed").value)/10;
 let bulletspeed = parseInt(document.querySelector("#bulletspeed").value);
 
+let obstaclesAmount = parseInt(document.querySelector("#obstaclesAmount").value);
+let obstaclesValue = parseInt(document.querySelector("#obstaclesValue").value);
+
 let settingsReset = document.querySelector("#settingsReset");
 let btnAutoshooting = document.querySelector("#btnAutoshooting");
 let isAutoschooting = false;
@@ -43,11 +46,14 @@ btnAutoshooting.addEventListener("click",(thies)=>{
 settingsReset.addEventListener("click",(thies)=>{
     btnAutoshooting.classList.remove("aktiv");
     document.body.querySelector(".buttonContainer #btnKeyboard").click();
-    document.querySelector("#alienbulletintervall").value = 70;
-    document.querySelector("#shipbulletintervall").value = 80;
+    document.querySelector("#alienbulletintervall").value = 60;
+    document.querySelector("#shipbulletintervall").value = 60;
     document.querySelector("#alienrows").value = 2;
     document.querySelector("#shipspeed").value = 5;
     document.querySelector("#alienspeed").value = 5;
-    document.querySelector("#bulletspeed").value = 3
+    document.querySelector("#bulletspeed").value = 4;
+
+    document.querySelector("#obstaclesAmount").value = 3;
+    document.querySelector("#obstaclesValue").value = 20;
 })
 
