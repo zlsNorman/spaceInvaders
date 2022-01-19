@@ -66,7 +66,7 @@ const createAliens = () => {
                 //damit der gap weggelassen wird
                 alien = new component(alienWidth,alienHeight,alienX ,10,"img/alien.png","alien");
             }
-            alien.animation();
+            alien.animation(alien);
             aliens[alienIndex] = alien;
         }
         alienInvasion.push(aliens);
@@ -198,6 +198,7 @@ let gameArea = {
 }
 function component(width,height,x,y,color,type) {
     //eigenschaften
+    this.touched = "middle";
     this.width = width;
     this.height = height;
     this.x = x;
@@ -263,14 +264,14 @@ function component(width,height,x,y,color,type) {
             }
         }   
     }
-    this.animation = function(){
+    this.animation = function(alien){
         this.animationInterval = setInterval( () => {
             if(!this.image.src.includes(color)){
                 this.image.src =  color;
             }else{
                 this.image.src = "img/alienHandsup.png";
             }
-        }, 1500);
+        }, 1750);
     };
 }
 
@@ -334,7 +335,6 @@ const showObstacles = () =>{
                             let othertop = alienBullets[x].y;
                             let otherbottom = alienBullets[x].y + (alienBullets[x].height);
                             
-                    
                             if((mybottom < othertop) ||
                             (mytop > otherbottom) ||
                             (myright < otherleft) ||
@@ -347,7 +347,6 @@ const showObstacles = () =>{
                     }
                 }
             })
-
         }
     }
 }
@@ -421,6 +420,8 @@ const movement = () => {
 
     if(controller == "Tastatur"){
         moveWithKeyboard(spaceship);
+    }else if(controller == "Handy"){
+        moveWithHandy(spaceship);
     }else{
         moveWithMouse(spaceship);
     }
@@ -539,6 +540,36 @@ const moveWithMouse = (component) =>{
         if(mouseCoorX-(component.width/2) - component.x < 8){
             component.speedX = 1;
         } 
+    }
+    component.newPoss();
+    component.update();
+}
+const moveWithHandy = (component) =>{
+    component.speedX = 0;
+
+    gameArea.canvas.addEventListener("touchstart",(thies)=>{
+        let touchedCorr = thies.changedTouches[0].pageX;
+        thies.preventDefault();
+
+        if(touchedCorr < (gameArea.canvas.width/2)){
+            component.touched = "left"
+        }
+        if(touchedCorr > (gameArea.canvas.width/2)){
+            component.touched = "right"
+        }   
+    })
+    gameArea.canvas.addEventListener("touchend",(thies)=>{
+        
+        thies.preventDefault();
+        component.touched = "middle" 
+    })
+    
+    
+    if(component.touched == "left"){
+        component.speedX += -shipSpeed;
+    }
+    if(component.touched == "right"){
+        component.speedX += shipSpeed;
     }
     component.newPoss();
     component.update();

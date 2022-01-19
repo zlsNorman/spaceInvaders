@@ -33,6 +33,10 @@ buttonContainer.addEventListener("click",(thies)=>{
         element.classList.add("aktiv")
         //controller = element.innerText;
     }
+
+    if(thies.target.id == "btnHandy"){
+        document.querySelector("#btnAutoshooting").classList.add("aktiv")
+    }
 })
 
 btnAutoshooting.addEventListener("click",(thies)=>{
