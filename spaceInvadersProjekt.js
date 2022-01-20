@@ -506,12 +506,11 @@ const movement = () => {
                 }
             }
             if(aliens[i].alive){
-                //animation requestAnimationFrame
+                //animation alien requestAnimationFrame
                 let repeater;
 
                 function alienHandsup () {
                 aliens[i].iterationCount++;
-                console.log(aliens[i].iterationCount)
                 if(aliens[i].iterationCount%60 == 0){
                 
                     if(!aliens[i].image.src.includes("img/alien.png")){
