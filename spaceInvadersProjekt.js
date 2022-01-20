@@ -568,15 +568,23 @@ const moveWithHandy = (component) =>{
 
     gameArea.canvas.addEventListener("touchstart",(thies)=>{
         let touchedCorr = thies.changedTouches[0].pageX;
-        console.log(touchedCorr,touchedCorr);
+        let canvashalf = (gameArea.canvas.width/2);
+        
         thies.preventDefault();
-
-        if(touchedCorr < (gameArea.canvas.width/2)/2){
+        if((window.fullScreen) ||
+        (window.innerWidth == screen.width && window.innerHeight == screen.height)){
+            canvashalf = (gameArea.canvas.width/2)/2;
+        }else{
+            canvashalf = (gameArea.canvas.width/2);
+        }
+        
+        if(touchedCorr < canvashalf){
             component.touched = "left"
         }
-        if(touchedCorr > (gameArea.canvas.width/2)/2){
+        if(touchedCorr > canvashalf){
             component.touched = "right"
-        }   
+        }
+          
     })
     gameArea.canvas.addEventListener("touchend",(thies)=>{
         

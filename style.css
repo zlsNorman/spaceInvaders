@@ -1,0 +1,51 @@
+canvas {
+    background-color: black;
+  }
+  canvas:fullscreen {
+    background-color: white;
+  }
+  body {
+    overflow: hidden;
+    margin: 0;
+  }
+  .flex {
+    display: flex;
+  }
+  .gap {
+    gap: 1rem;
+  }
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+  }
+  #contolls,
+  #settings {
+    padding: 1rem;
+  }
+  .container {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    display: flex;
+  }
+  .aktiv {
+    border-color: green;
+    border-width: 4px;
+  }
+  #fullscreen {
+    margin-left: 41rem;
+  }
+  #reset {
+    margin-top: 1rem;
+    display: block;
+  }
+  #settingsReset {
+    margin-top: 1rem;
+    display: block;
+  }
+  .important {
+    color: red;
+  }
+  #btnAutoshooting {
+    margin-top: 0.5rem;
+  }
