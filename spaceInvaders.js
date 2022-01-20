@@ -366,10 +366,10 @@ const attacks = () => {
     })
     aliensAviable = [...new Set(aliensAviable)];
     let randomNumber = Math.floor(Math.random()*(aliensAviable.length));
-
+    let randomAlien = aliensAviable[randomNumber]
     let alienArmyNr = alienInvasion.length-1
     for(let i = alienInvasion.length-1; i>= 0; i--){
-        if(alienInvasion[i][randomNumber].alive == true){
+        if(alienInvasion[i][randomAlien].alive == true){
             alienArmyNr = i;
             break;
         } 
