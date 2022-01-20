@@ -287,7 +287,6 @@ const updateGameArea = () => {
     },0)
     gameArea.alienDeathCount = alienInvasion.reduce((prev,curr) => {
         return prev + curr.filter((el) => {return !el.alive}).length;
-        //return prev.filter((el) => {return !el.alive}).length + curr.filter((el) => {return !el.alive}).length;
     },0)
     
     score.innerHTML = gameArea.alienDeathCount;
@@ -569,12 +568,13 @@ const moveWithHandy = (component) =>{
 
     gameArea.canvas.addEventListener("touchstart",(thies)=>{
         let touchedCorr = thies.changedTouches[0].pageX;
+        console.log(touchedCorr,touchedCorr);
         thies.preventDefault();
 
-        if(touchedCorr < (gameArea.canvas.width/2)){
+        if(touchedCorr < (gameArea.canvas.width/2)/2){
             component.touched = "left"
         }
-        if(touchedCorr > (gameArea.canvas.width/2)){
+        if(touchedCorr > (gameArea.canvas.width/2)/2){
             component.touched = "right"
         }   
     })
