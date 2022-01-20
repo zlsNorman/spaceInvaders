@@ -57,7 +57,37 @@ settingsReset.addEventListener("click",(thies)=>{
     document.querySelector("#alienspeed").value = 5;
     document.querySelector("#bulletspeed").value = 4;
 
-    document.querySelector("#obstaclesAmount").value = 3;
-    document.querySelector("#obstaclesValue").value = 20;
+    document.querySelector("#obstaclesAmount").value = 20;
+    document.querySelector("#obstaclesValue").value = 3;
+
 })
 
+const setLocalStorage = () =>{
+
+    let settings = {
+        alienrows: inputAlienRows,
+        alienbulletintervall: alienCustomBulletIntervall,
+        shipbulletintervall: shipCustomBulletIntervall,
+        alienspeed: alienSpeed*10,
+        shipspeed: shipSpeed,
+        bulletspeed: bulletspeed,
+        obstaclesamount: obstaclesAmount,
+        obstaclesvalue: obstaclesValue,
+    }
+    localStorage.setItem("settings",JSON.stringify(settings))
+}
+
+if(localStorage.getItem("settings")){
+    let storageSettings = JSON.parse(localStorage.getItem("settings"));
+    console.log(storageSettings);
+
+    document.querySelector("#alienbulletintervall").value = storageSettings.alienbulletintervall;
+    document.querySelector("#shipbulletintervall").value = storageSettings.shipbulletintervall;
+    document.querySelector("#alienrows").value = storageSettings.alienrows;
+    document.querySelector("#shipspeed").value = storageSettings.shipspeed;
+    document.querySelector("#alienspeed").value = storageSettings.alienspeed;
+    document.querySelector("#bulletspeed").value = storageSettings.bulletspeed;
+
+    document.querySelector("#obstaclesAmount").value = storageSettings.obstaclesamount;
+    document.querySelector("#obstaclesValue").value = storageSettings.obstaclesvalue;
+}

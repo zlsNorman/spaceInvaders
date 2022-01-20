@@ -66,7 +66,8 @@ const createAliens = () => {
                 //damit der gap weggelassen wird
                 alien = new component(alienWidth,alienHeight,alienX ,10,"img/alien.png","alien");
             }
-            alien.animation(alien);
+            //alien.animation(alien);
+
             aliens[alienIndex] = alien;
         }
         alienInvasion.push(aliens);
@@ -206,6 +207,7 @@ function component(width,height,x,y,color,type) {
     this.speedX = 0;
     this.speedY = 0;
     this.alive = true;
+    this.iterationCount = 0;
 
     if(type === "bullet"|| type === "alienBullet"){
     }else if(type === "obstacle"){
@@ -504,7 +506,26 @@ const movement = () => {
                 }
             }
             if(aliens[i].alive){
+                //animation requestAnimationFrame
+                let repeater;
+
+                function alienHandsup () {
+                aliens[i].iterationCount++;
+                console.log(aliens[i].iterationCount)
+                if(aliens[i].iterationCount%60 == 0){
+                
+                    if(!aliens[i].image.src.includes("img/alien.png")){
+                        aliens[i].image.src =  "img/alien.png";
+                    }else{
+                        aliens[i].image.src = "img/alienHandsup.png";
+                    }
+                    repeater = requestAnimationFrame(alienHandsup);
+                    }
+                }
+                alienHandsup();
+
                 aliens[i].update();
+   
             }
         }
     }
@@ -627,6 +648,7 @@ btnFullscreen.addEventListener("click",fullscreen);
 btnReset.addEventListener("click",(thies)=>{
     thies.target.blur()
     gameArea.restart();
+    setLocalStorage();
 });
 
 startGame();
