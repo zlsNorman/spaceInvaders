@@ -367,7 +367,6 @@ const attacks = () => {
     aliensAviable = [...new Set(aliensAviable)];
     let randomNumber = Math.floor(Math.random()*(aliensAviable.length));
     let randomAlien = aliensAviable[randomNumber]
-    console.log(aliensAviable)
     let alienArmyNr = alienInvasion.length-1
     for(let i = alienInvasion.length-1; i>= 0; i--){
         if(alienInvasion[i][randomAlien].alive == true){
@@ -565,7 +564,6 @@ const moveWithMouse = (component) =>{
 }
 const moveWithHandy = (component) =>{
     component.speedX = 0;
-    console.log(component.x)
 
     gameArea.canvas.addEventListener("touchstart",(thies)=>{
         let touchedCorr = thies.changedTouches[0].pageX;
