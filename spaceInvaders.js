@@ -565,6 +565,7 @@ const moveWithMouse = (component) =>{
 }
 const moveWithHandy = (component) =>{
     component.speedX = 0;
+    console.log(component.x)
 
     gameArea.canvas.addEventListener("touchstart",(thies)=>{
         let touchedCorr = thies.changedTouches[0].pageX;
@@ -578,11 +579,13 @@ const moveWithHandy = (component) =>{
             canvashalf = (gameArea.canvas.width/2);
         }
         
-        if(touchedCorr < canvashalf){
+        if(touchedCorr < canvashalf && component.x > 0){
             component.touched = "left"
         }
-        if(touchedCorr > canvashalf){
+        else if(touchedCorr > canvashalf && component.x < (gameArea.canvas.width - component.width)){
             component.touched = "right"
+        }else{
+            component.touched = "middle"
         }
           
     })
