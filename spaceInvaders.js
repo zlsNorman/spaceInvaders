@@ -367,6 +367,7 @@ const attacks = () => {
     aliensAviable = [...new Set(aliensAviable)];
     let randomNumber = Math.floor(Math.random()*(aliensAviable.length));
     let randomAlien = aliensAviable[randomNumber]
+    console.log(aliensAviable)
     let alienArmyNr = alienInvasion.length-1
     for(let i = alienInvasion.length-1; i>= 0; i--){
         if(alienInvasion[i][randomAlien].alive == true){
@@ -375,8 +376,7 @@ const attacks = () => {
         } 
     }
 
-    alienShoot(alienInvasion[alienArmyNr][randomNumber]);
-
+    alienShoot(alienInvasion[alienArmyNr][randomAlien]);
     for(let alienBullet of alienBullets){
         alienBullet.newPoss();
         alienBullet.update();
